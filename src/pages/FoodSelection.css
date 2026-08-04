@@ -1,0 +1,52 @@
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f6fb;
+}
+
+.food-container{
+    width:700px;
+    margin:40px auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
+
+.food-container h1{
+    text-align:center;
+    color:#6c3df4;
+    margin-bottom:30px;
+}
+
+.food-container h2{
+    color:#333;
+    margin-top:25px;
+}
+
+.food-container label{
+    display:block;
+    padding:10px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.food-container input{
+    margin-right:10px;
+}
+
+.food-container button{
+    margin-top:30px;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#6c3df4;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.food-container button:hover{
+    background:#4d25d1;
+}
