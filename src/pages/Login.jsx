@@ -26,9 +26,14 @@ function Login() {
       return;
     }
 
+    if (email.toLowerCase() === "mayankjain0614@gmail.com") {
+      alert("This email address is not allowed on this site.");
+      return;
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       alert(error.message);
     }

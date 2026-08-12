@@ -30,7 +30,7 @@ function Home() {
 
         <div className="nav-buttons">
 
-          <Link to="/">
+          <Link to="/login">
             <button className="login-btn">
               Customer Login
             </button>

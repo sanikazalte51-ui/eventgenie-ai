@@ -1,151 +1,175 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import { generateEventIdeas } from "../utils/gemini";
 import "./ChatBot.css";
+
+const fileToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = (error) => reject(error);
+  });
 
 function ChatBot() {
   const [open, setOpen] = useState(false);
-
+  const [input, setInput] = useState("");
+  const [attachments, setAttachments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text:
-        "👋 Welcome to EventGenie AI!\n\nHow can I help you today?\nChoose one of the options below."
+      text: "👋 Welcome to EventGenie AI!\n\nI can help you plan your event. You can ask me for ideas, upload a picture of a venue or decoration, or paste a link to a social media trend!"
     }
   ]);
+  const messagesEndRef = useRef(null);
 
-  const questions = [
-    {
-      question: "🎉 What types of events do you organize?",
-      answer:
-        "We organize Weddings, Birthdays, Ring Ceremonies, Baby Showers, Kelvan, Corporate Events, Engagements, Anniversary Celebrations and many more."
-    },
-    {
-      question: "📅 How do I book an event?",
-      answer:
-        "Booking is simple!\n\n1️⃣ Click 'Start Planning'.\n2️⃣ Select your event.\n3️⃣ Fill in your event details.\n4️⃣ Choose food and decoration.\n5️⃣ Confirm your booking."
-    },
-    {
-      question: "💰 What is the starting budget?",
-      answer:
-        "Our event packages start from ₹50,000. The final price depends on your selected services and guest count."
-    },
-    {
-      question: "🍽 What food options are available?",
-      answer:
-        "We provide Veg, Non-Veg, Jain and Customized food packages with multiple menu choices."
-    },
-    {
-      question: "🎨 Can I customize the decoration?",
-      answer:
-        "Yes! You can choose from Traditional, Floral, Royal, Modern and Luxury decoration themes."
-    },
-    {
-      question: "🏛 Can I choose my own venue?",
-      answer:
-        "Yes. You can either select one of our recommended venues or use your own venue."
-    },
-    {
-      question: "📧 Will I receive a confirmation email?",
-      answer:
-        "Yes. After confirming your booking, a confirmation email will be sent to your registered email address."
-    },
-    {
-      question: "⭐ Why should I choose EventGenie AI?",
-      answer:
-        "EventGenie AI offers:\n\n✅ Easy event booking\n✅ Smart planning\n✅ Budget-friendly packages\n✅ Food & Decoration customization\n✅ Fast booking process\n✅ Friendly customer support"
-    },
-    {
-      question: "📞 How can I contact support?",
-      answer:
-        "You can contact our support team anytime.\n\n📧 Email: sanikazalte02@gmail.com"
-    },
-    {
-      question: "❌ Can I cancel my booking?",
-      answer:
-        "Yes. Please contact our support team as soon as possible to discuss cancellation options."
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, open]);
+
+  const handleFileChange = async (e) => {
+    const files = Array.from(e.target.files);
+    const validFiles = files.filter(f => f.type.startsWith('image/'));
+    
+    if (validFiles.length < files.length) {
+      alert("Currently, only images are supported for direct upload.");
     }
-  ];
 
-  const askQuestion = (item) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        sender: "user",
-        text: item.question
-      },
-      {
-        sender: "bot",
-        text: item.answer
-      }
-    ]);
+    const newAttachments = await Promise.all(
+      validFiles.map(async (f) => ({
+        file: f,
+        base64: await fileToBase64(f),
+        previewUrl: URL.createObjectURL(f),
+        type: f.type
+      }))
+    );
+
+    setAttachments(prev => [...prev, ...newAttachments]);
+    e.target.value = null; // reset input
+  };
+
+  const removeAttachment = (index) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSend = async () => {
+    if (!input.trim() && attachments.length === 0) return;
+    
+    const userMessage = {
+      sender: "user",
+      text: input,
+      attachments: attachments.map(a => a.previewUrl)
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    
+    const promptText = input || "What do you think about these images?";
+    const currentAttachments = [...attachments];
+    
+    setInput("");
+    setAttachments([]);
+    setIsLoading(true);
+
+    try {
+      const responseText = await generateEventIdeas(promptText, currentAttachments);
+      setMessages(prev => [...prev, { sender: "bot", text: responseText }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { sender: "bot", text: `❌ **Error**: ${error.message}` }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const clearChat = () => {
     setMessages([
       {
         sender: "bot",
-        text:
-          "👋 Welcome back!\n\nHow can I help you today?\nChoose one of the options below."
+        text: "👋 Welcome back! What are we planning today?"
       }
     ]);
   };
 
   return (
     <>
-      <button
-        className="chat-button"
-        onClick={() => setOpen(!open)}
-      >
+      <button className="chat-button" onClick={() => setOpen(!open)}>
         🤖
       </button>
 
       {open && (
         <div className="chat-box">
-
           <div className="chat-header">
             🤖 EventGenie AI
-
-            <button
-              className="close-btn"
-              onClick={() => setOpen(false)}
-            >
-              ✖
-            </button>
+            <button className="close-btn" onClick={() => setOpen(false)}>✖</button>
           </div>
 
           <div className="chat-body">
             {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={
-                  msg.sender === "bot"
-                    ? "bot-message"
-                    : "user-message"
-                }
-              >
-                {msg.text}
+              <div key={index} className={msg.sender === "bot" ? "bot-message" : "user-message"}>
+                {msg.attachments && msg.attachments.length > 0 && (
+                  <div className="message-attachments">
+                    {msg.attachments.map((url, idx) => (
+                      <img key={idx} src={url} alt="attachment" className="message-image" />
+                    ))}
+                  </div>
+                )}
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
               </div>
             ))}
+            {isLoading && (
+              <div className="bot-message typing-indicator">
+                <span>.</span><span>.</span><span>.</span>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
 
-          <div className="quick-buttons">
-            {questions.map((item, index) => (
-              <button
-                key={index}
-                className="question-btn"
-                onClick={() => askQuestion(item)}
-              >
-                {item.question}
+          <div className="chat-input-area">
+            {attachments.length > 0 && (
+              <div className="attachments-preview">
+                {attachments.map((att, idx) => (
+                  <div key={idx} className="attachment-item">
+                    <img src={att.previewUrl} alt="preview" />
+                    <button onClick={() => removeAttachment(idx)}>✖</button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <div className="input-row">
+              <label className="attach-btn">
+                📎
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  multiple 
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
+              </label>
+              
+              <input 
+                type="text"
+                placeholder="Ask for ideas or paste a link..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              />
+              
+              <button className="send-btn" onClick={handleSend} disabled={isLoading}>
+                🚀
               </button>
-            ))}
+            </div>
           </div>
 
-          <button
-            className="clear-btn"
-            onClick={clearChat}
-          >
-            🗑 Clear Chat
-          </button>
-
+          <div className="chat-footer">
+            <button className="clear-btn" onClick={clearChat}>🗑 Clear Chat</button>
+          </div>
         </div>
       )}
     </>

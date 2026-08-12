@@ -42,12 +42,17 @@ function Signup() {
       return;
     }
 
+    if (email.toLowerCase() === "mayankjain0614@gmail.com") {
+      alert("This email address is not allowed on this site.");
+      return;
+    }
+
     try {
       await createUserWithEmailAndPassword(auth, email, password);
 
       alert("🎉 Account Created Successfully!");
 
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       alert(error.message);
     }
@@ -108,7 +113,7 @@ function Signup() {
         <p>
           Already have an account?
           <br />
-          <Link to="/">
+          <Link to="/login">
             Login
           </Link>
         </p>

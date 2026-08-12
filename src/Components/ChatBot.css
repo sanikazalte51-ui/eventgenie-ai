@@ -81,27 +81,119 @@
     max-width:85%;
 }
 
-.quick-buttons{
-    padding:10px;
-    overflow-y:auto;
-    max-height:220px;
-    border-top:1px solid #ddd;
+.chat-input-area {
+    border-top: 1px solid #ddd;
+    background: #fff;
+    padding: 10px;
 }
 
-.question-btn{
-    width:100%;
-    margin-bottom:8px;
-    padding:10px;
-    border:none;
-    border-radius:8px;
-    background:#6C3EF4;
-    color:white;
-    cursor:pointer;
-    text-align:left;
+.attachments-preview {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    overflow-x: auto;
 }
 
-.question-btn:hover{
-    background:#5129d4;
+.attachment-item {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.attachment-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.attachment-item button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.attach-btn {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.input-row input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.send-btn {
+    background: #6C3EF4;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.message-attachments {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+}
+
+.message-image {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.typing-indicator span {
+    font-size: 24px;
+    line-height: 10px;
+    animation: blink 1.4s infinite both;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0% { opacity: 0.2; }
+    20% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+.chat-footer {
+    padding: 0;
 }
 
 .clear-btn{

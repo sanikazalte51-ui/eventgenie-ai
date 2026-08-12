@@ -19,9 +19,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Customer */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/home" element={<Home />} />
         <Route path="/events" element={<EventSelection />} />
         <Route path="/details" element={<EventDetails />} />
         <Route path="/food" element={<FoodSelection />} />
