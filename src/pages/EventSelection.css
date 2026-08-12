@@ -1,0 +1,121 @@
+body{
+    margin:0;
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    background:#f5f7fb;
+}
+
+/* ================= CONTAINER ================= */
+
+.food-container{
+    max-width:1000px;
+    margin:50px auto;
+    background:#fff;
+    padding:40px;
+    border-radius:25px;
+    box-shadow:0 15px 40px rgba(0,0,0,.12);
+}
+
+.food-container h1{
+    text-align:center;
+    color:#6C3EF4;
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    font-size:18px;
+    margin-bottom:40px;
+}
+
+.food-container h2{
+    color:#6C3EF4;
+    margin:35px 0 20px;
+}
+
+/* ================= GRID ================= */
+
+.food-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+/* ================= FOOD CARD ================= */
+
+.food-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:18px;
+    background:#fff;
+    border:2px solid #ddd;
+    border-radius:16px;
+    cursor:pointer;
+    transition:.3s;
+    box-shadow:0 5px 15px rgba(0,0,0,.05);
+}
+
+.food-card:hover{
+    transform:translateY(-5px);
+    border-color:#6C3EF4;
+}
+
+.food-card.selected{
+    background:#f4efff;
+    border-color:#6C3EF4;
+    box-shadow:0 10px 25px rgba(108,62,244,.20);
+}
+
+.food-card input{
+    width:20px;
+    height:20px;
+    accent-color:#6C3EF4;
+}
+
+.food-card span{
+    font-size:17px;
+    font-weight:500;
+    color:#333;
+}
+
+/* ================= BUTTON ================= */
+
+.food-container button{
+    width:100%;
+    margin-top:40px;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#6C3EF4,#8A5CFF);
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.food-container button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 25px rgba(108,62,244,.35);
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+
+.food-container{
+    margin:20px;
+    padding:25px;
+}
+
+.food-container h1{
+    font-size:32px;
+}
+
+.food-grid{
+    grid-template-columns:1fr;
+}
+
+}
